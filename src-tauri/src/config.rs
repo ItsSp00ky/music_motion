@@ -8,7 +8,7 @@ pub struct AppConfig {
     pub click_through: bool,
     pub theme: String,         // "frosted-card", "minimal-hud", "dynamic-island", "cyber-neon"
     pub sensitivity: f32,      // 0.5 to 2.0 (default 1.0)
-    pub auto_hide_seconds: u32,// default 3
+    pub auto_hide_seconds: u32,// 0 = keep standby card visible, >0 = fade completely after N seconds
     pub margin_x: i32,         // default 24
     pub margin_y: i32,         // default 24
 }
@@ -20,7 +20,7 @@ impl Default for AppConfig {
             click_through: false,
             theme: "frosted-card".to_string(),
             sensitivity: 1.0,
-            auto_hide_seconds: 3,
+            auto_hide_seconds: 0,
             margin_x: 24,
             margin_y: 24,
         }

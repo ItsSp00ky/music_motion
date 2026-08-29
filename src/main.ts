@@ -15,20 +15,40 @@ let currentConfig: AppConfig = {
   click_through: false,
   theme: 'frosted-card',
   sensitivity: 1.0,
-  auto_hide_seconds: 3,
+  auto_hide_seconds: 0, // Keep visible in standby by default
   margin_x: 24,
   margin_y: 24,
+};
+
+const initialIdleState: AudioState = {
+  has_audio: false,
+  overall_peak: 0,
+  is_playing: false,
+  track_title: 'MusicMotion Active',
+  artist: 'Play music in Spotify, YouTube, or apps',
+  album: '',
+  thumbnail: null,
+  source_app: 'Standby',
+  active_apps: [],
 };
 
 let lastActiveTime = Date.now();
 let isIdleHidden = false;
 
-// Apply theme
+// Initialize theme and render initial standby state immediately
 themeEngine.setTheme(currentConfig.theme);
+themeEngine.render(initialIdleState, currentConfig);
 
 // Idle check loop
 setInterval(() => {
-  if (currentConfig.auto_hide_seconds <= 0) return;
+  if (currentConfig.auto_hide_seconds <= 0) {
+    if (isIdleHidden) {
+      isIdleHidden = false;
+      appEl.classList.remove('idle-hidden');
+    }
+    return;
+  }
+
   const elapsed = (Date.now() - lastActiveTime) / 1000;
   if (elapsed >= currentConfig.auto_hide_seconds && !isIdleHidden) {
     isIdleHidden = true;
@@ -43,9 +63,19 @@ function handleAudioUpdate(state: AudioState) {
       isIdleHidden = false;
       appEl.classList.remove('idle-hidden');
     }
+    themeEngine.render(state, currentConfig);
+  } else {
+    // Idle / no active sound state
+    themeEngine.render(
+      {
+        ...state,
+        track_title: state.track_title || 'MusicMotion Active',
+        artist: state.artist || 'Waiting for audio playback...',
+        source_app: state.source_app || 'Standby',
+      },
+      currentConfig
+    );
   }
-
-  themeEngine.render(state, currentConfig);
 }
 
 // Right-click context menu handling
@@ -86,6 +116,7 @@ contextMenu.addEventListener('click', async (e) => {
     const nextTheme = themes[(currentIndex + 1) % themes.length];
     currentConfig.theme = nextTheme.id;
     themeEngine.setTheme(nextTheme.id);
+    themeEngine.render(initialIdleState, currentConfig);
     try {
       await invoke('set_theme', { theme: nextTheme.id });
     } catch {
@@ -110,6 +141,7 @@ async function init() {
     if (config) {
       currentConfig = config;
       themeEngine.setTheme(config.theme);
+      themeEngine.render(initialIdleState, currentConfig);
     }
 
     await listen<AudioState>('audio-update', (event) => {
@@ -119,6 +151,7 @@ async function init() {
     await listen<AppConfig>('config-update', (event) => {
       currentConfig = event.payload;
       themeEngine.setTheme(currentConfig.theme);
+      themeEngine.render(initialIdleState, currentConfig);
     });
   } catch (err) {
     console.warn('Running outside Tauri environment. Starting mock simulation...', err);
@@ -137,9 +170,9 @@ function startMockSimulation() {
       has_audio: true,
       overall_peak: peak,
       is_playing: true,
-      track_title: 'Starboy (feat. Daft Punk)',
+      track_title: 'Blinding Lights',
       artist: 'The Weeknd',
-      album: 'Starboy',
+      album: 'After Hours',
       thumbnail: null,
       source_app: 'Spotify',
       active_apps: [

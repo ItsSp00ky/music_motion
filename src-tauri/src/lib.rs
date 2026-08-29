@@ -99,6 +99,8 @@ pub fn run() {
             // Position overlay above taskbar
             let config = ConfigManager::load();
             if let Some(window) = app.get_webview_window("main") {
+                let _ = window.show();
+                let _ = window.set_always_on_top(true);
                 if let Ok(hwnd) = window.hwnd() {
                     WindowHelper::position_overlay(
                         hwnd.0 as isize,

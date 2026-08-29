@@ -18,6 +18,10 @@ impl WindowHelper {
                 Some(&mut rect as *mut _ as *mut _),
                 SYSTEM_PARAMETERS_INFO_UPDATE_FLAGS(0),
             );
+            if rect.right == 0 && rect.bottom == 0 {
+                rect.right = 1920;
+                rect.bottom = 1040;
+            }
             rect
         }
     }
@@ -42,6 +46,8 @@ impl WindowHelper {
                 work_area.bottom - height - margin_y,
             ), // default "bottom-right"
         };
+
+        eprintln!("[MusicMotion] Positioning overlay at x={}, y={}, w={}, h={}", x, y, width, height);
 
         unsafe {
             let _ = SetWindowPos(
