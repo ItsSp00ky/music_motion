@@ -71,7 +71,12 @@ fn set_theme(theme: String) {
 #[tauri::command]
 fn open_themes_folder() {
     let themes_dir = ConfigManager::get_themes_dir();
+    #[cfg(target_os = "windows")]
     let _ = std::process::Command::new("explorer").arg(themes_dir).spawn();
+    #[cfg(target_os = "linux")]
+    let _ = std::process::Command::new("xdg-open").arg(themes_dir).spawn();
+    #[cfg(target_os = "macos")]
+    let _ = std::process::Command::new("open").arg(themes_dir).spawn();
 }
 
 pub fn run() {
@@ -90,7 +95,7 @@ pub fn run() {
                 eprintln!("Failed to setup tray: {:?}", e);
             }
 
-            // Position overlay above taskbar
+            // Position overlay above taskbar / screen edge
             let config = ConfigManager::load();
             if let Some(window) = app.get_webview_window("main") {
                 WindowHelper::position_overlay(

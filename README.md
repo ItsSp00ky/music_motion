@@ -49,12 +49,28 @@
 ## 🚀 Installation
 
 ### Option 1: Download Pre-built Release (Recommended)
-1. Go to the [Releases](https://github.com/ItsSp00ky/music_motion/releases) page.
-2. Download the latest `MusicMotion_1.0.0_x64_en-US.msi` installer or portable `MusicMotion.exe`.
-3. Run the installer and launch **MusicMotion**.
 
-### Option 2: Run with Bun / Cargo
-```powershell
+#### 🪟 Windows:
+1. Download the latest `MusicMotion_1.0.0_x64_en-US.msi` installer or portable `MusicMotion.exe` from [Releases](https://github.com/ItsSp00ky/music_motion/releases).
+2. Double-click to run!
+
+#### 🐧 Linux (Fedora, Ubuntu, Arch):
+- **Fedora / RHEL (`.rpm`)**:
+  ```bash
+  sudo dnf install ./MusicMotion-1.0.0-1.x86_64.rpm
+  ```
+- **Universal Linux (`.AppImage`)**:
+  ```bash
+  chmod +x MusicMotion_1.0.0_amd64.AppImage
+  ./MusicMotion_1.0.0_amd64.AppImage
+  ```
+- **Ubuntu / Debian (`.deb`)**:
+  ```bash
+  sudo dpkg -i MusicMotion_1.0.0_amd64.deb
+  ```
+
+### Option 2: Run from Source
+```bash
 # Clone the repository
 git clone https://github.com/ItsSp00ky/music_motion.git
 cd music_motion
@@ -62,7 +78,7 @@ cd music_motion
 # Install frontend dependencies
 bun install   # or npm install
 
-# Run in development mode (starts overlay above taskbar)
+# Run in development mode
 bun run tauri dev
 ```
 

@@ -90,7 +90,12 @@ pub fn setup_tray(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
                 "theme_neon" => apply_theme(app_handle, &mut current_config, "cyber-neon"),
                 "open_themes" => {
                     let themes_dir = ConfigManager::get_themes_dir();
+                    #[cfg(target_os = "windows")]
                     let _ = std::process::Command::new("explorer").arg(themes_dir).spawn();
+                    #[cfg(target_os = "linux")]
+                    let _ = std::process::Command::new("xdg-open").arg(themes_dir).spawn();
+                    #[cfg(target_os = "macos")]
+                    let _ = std::process::Command::new("open").arg(themes_dir).spawn();
                 }
                 "quit" => {
                     app_handle.exit(0);

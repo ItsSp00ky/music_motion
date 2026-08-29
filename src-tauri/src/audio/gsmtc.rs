@@ -1,11 +1,4 @@
-use base64::{engine::general_purpose::STANDARD, Engine as _};
 use serde::{Deserialize, Serialize};
-use windows::Media::Control::{
-    GlobalSystemMediaTransportControlsSession,
-    GlobalSystemMediaTransportControlsSessionManager,
-    GlobalSystemMediaTransportControlsSessionPlaybackStatus,
-};
-use windows::Storage::Streams::{DataReader, InputStreamOptions};
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
 pub struct MediaSessionInfo {
@@ -18,8 +11,21 @@ pub struct MediaSessionInfo {
     pub thumbnail_base64: Option<String>,
 }
 
+#[cfg(target_os = "windows")]
+use base64::{engine::general_purpose::STANDARD, Engine as _};
+#[cfg(target_os = "windows")]
+use windows::Media::Control::{
+    GlobalSystemMediaTransportControlsSession,
+    GlobalSystemMediaTransportControlsSessionManager,
+    GlobalSystemMediaTransportControlsSessionPlaybackStatus,
+};
+#[cfg(target_os = "windows")]
+use windows::Storage::Streams::{DataReader, InputStreamOptions};
+
+#[cfg(target_os = "windows")]
 pub struct GsmtcMonitor;
 
+#[cfg(target_os = "windows")]
 impl GsmtcMonitor {
     pub fn new() -> Self {
         Self
@@ -73,5 +79,18 @@ impl GsmtcMonitor {
             source_app,
             thumbnail_base64,
         })
+    }
+}
+
+#[cfg(not(target_os = "windows"))]
+pub struct GsmtcMonitor;
+
+#[cfg(not(target_os = "windows"))]
+impl GsmtcMonitor {
+    pub fn new() -> Self {
+        Self
+    }
+    pub fn get_current_media_info(&self) -> Option<MediaSessionInfo> {
+        None
     }
 }

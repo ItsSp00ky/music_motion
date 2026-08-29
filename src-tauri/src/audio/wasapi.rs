@@ -1,20 +1,4 @@
-use std::ffi::OsString;
-use std::os::windows::ffi::OsStringExt;
-use std::path::Path;
 use serde::{Deserialize, Serialize};
-use windows::core::Interface;
-use windows::Win32::Foundation::{CloseHandle, HANDLE};
-use windows::Win32::Media::Audio::Endpoints::IAudioMeterInformation;
-use windows::Win32::Media::Audio::{
-    eConsole, eRender, AudioSessionStateActive, IAudioSessionControl2,
-    IAudioSessionEnumerator, IAudioSessionManager2, IMMDevice, IMMDeviceEnumerator,
-    MMDeviceEnumerator,
-};
-use windows::Win32::System::Com::{
-    CoCreateInstance, CoInitializeEx, CoUninitialize, CLSCTX_ALL, COINIT_MULTITHREADED,
-};
-use windows::Win32::System::ProcessStatus::K32GetProcessImageFileNameW;
-use windows::Win32::System::Threading::{OpenProcess, PROCESS_QUERY_LIMITED_INFORMATION};
 
 #[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct ProcessAudioInfo {
@@ -23,10 +7,39 @@ pub struct ProcessAudioInfo {
     pub peak: f32,
 }
 
+#[cfg(target_os = "windows")]
+use std::ffi::OsString;
+#[cfg(target_os = "windows")]
+use std::os::windows::ffi::OsStringExt;
+#[cfg(target_os = "windows")]
+use std::path::Path;
+#[cfg(target_os = "windows")]
+use windows::core::Interface;
+#[cfg(target_os = "windows")]
+use windows::Win32::Foundation::{CloseHandle, HANDLE};
+#[cfg(target_os = "windows")]
+use windows::Win32::Media::Audio::Endpoints::IAudioMeterInformation;
+#[cfg(target_os = "windows")]
+use windows::Win32::Media::Audio::{
+    eConsole, eRender, AudioSessionStateActive, IAudioSessionControl2,
+    IAudioSessionEnumerator, IAudioSessionManager2, IMMDevice, IMMDeviceEnumerator,
+    MMDeviceEnumerator,
+};
+#[cfg(target_os = "windows")]
+use windows::Win32::System::Com::{
+    CoCreateInstance, CoInitializeEx, CoUninitialize, CLSCTX_ALL, COINIT_MULTITHREADED,
+};
+#[cfg(target_os = "windows")]
+use windows::Win32::System::ProcessStatus::K32GetProcessImageFileNameW;
+#[cfg(target_os = "windows")]
+use windows::Win32::System::Threading::{OpenProcess, PROCESS_QUERY_LIMITED_INFORMATION};
+
+#[cfg(target_os = "windows")]
 pub struct WasapiMonitor {
     initialized: bool,
 }
 
+#[cfg(target_os = "windows")]
 impl WasapiMonitor {
     pub fn new() -> Self {
         unsafe {
@@ -94,7 +107,6 @@ impl WasapiMonitor {
                                 let is_active = state == AudioSessionStateActive || peak > 0.001;
                                 if is_active {
                                     let process_name = get_process_name(pid);
-                                    // Avoid duplicates
                                     if let Some(existing) = active_list.iter_mut().find(|p: &&mut ProcessAudioInfo| p.pid == pid) {
                                         if peak > existing.peak {
                                             existing.peak = peak;
@@ -118,6 +130,7 @@ impl WasapiMonitor {
     }
 }
 
+#[cfg(target_os = "windows")]
 impl Drop for WasapiMonitor {
     fn drop(&mut self) {
         if self.initialized {
@@ -128,6 +141,7 @@ impl Drop for WasapiMonitor {
     }
 }
 
+#[cfg(target_os = "windows")]
 fn get_process_name(pid: u32) -> String {
     unsafe {
         let handle: Result<HANDLE, _> = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, false, pid);
@@ -149,4 +163,17 @@ fn get_process_name(pid: u32) -> String {
         }
     }
     format!("App ({})", pid)
+}
+
+#[cfg(not(target_os = "windows"))]
+pub struct WasapiMonitor;
+
+#[cfg(not(target_os = "windows"))]
+impl WasapiMonitor {
+    pub fn new() -> Self {
+        Self
+    }
+    pub fn get_active_sessions(&self) -> (f32, Vec<ProcessAudioInfo>) {
+        (0.0, Vec::new())
+    }
 }
