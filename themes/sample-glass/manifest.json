@@ -1,0 +1,14 @@
+{
+  "id": "sample-glass",
+  "name": "Sample Glass Aurora",
+  "version": "1.0.0",
+  "author": "Community",
+  "description": "An aurora-infused glassmorphism theme with smooth dynamic wave visualizer",
+  "width": 380,
+  "height": 130,
+  "visualizer": {
+    "type": "wave",
+    "primaryColor": "#10b981",
+    "secondaryColor": "#06b6d4"
+  }
+}
