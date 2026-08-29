@@ -12,6 +12,9 @@ pub struct LinuxMediaInfo {
 }
 
 #[cfg(target_os = "linux")]
+use std::collections::HashMap;
+
+#[cfg(target_os = "linux")]
 pub struct LinuxMprisMonitor {
     conn: Option<zbus::blocking::Connection>,
 }
@@ -45,9 +48,8 @@ impl LinuxMprisMonitor {
                 };
 
                 if let Ok(proxy) = builder.build() {
-                    let status: String = proxy
-                        .get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
-                        .map(|v: zbus::zvariant::Value| v.downcast_into().unwrap_or_default())
+                    let status = proxy
+                        .get::<String>("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
                         .unwrap_or_default();
 
                     let is_playing = status == "Playing";
@@ -57,29 +59,37 @@ impl LinuxMprisMonitor {
                     let mut album = String::new();
                     let mut art_url = None;
 
-                    if let Ok(metadata_val) = proxy.get::<zbus::zvariant::Value>("org.mpris.MediaPlayer2.Player", "Metadata") {
-                        if let Ok(map) = <std::collections::HashMap<String, zbus::zvariant::Value>>::try_from(metadata_val) {
-                            if let Some(t) = map.get("xesam:title") {
-                                title = t.downcast_ref::<str>().ok().unwrap_or_default().to_string();
+                    if let Ok(map) = proxy.get::<HashMap<String, zbus::zvariant::OwnedValue>>(
+                        "org.mpris.MediaPlayer2.Player",
+                        "Metadata",
+                    ) {
+                        if let Some(t) = map.get("xesam:title") {
+                            if let Ok(s) = String::try_from(t.clone()) {
+                                title = s;
                             }
-                            if let Some(a) = map.get("xesam:artist") {
-                                if let Ok(arr) = a.downcast_ref::<zbus::zvariant::Array>() {
-                                    let artists: Vec<String> = arr.iter().filter_map(|v| v.downcast_ref::<str>().ok().map(|s| s.to_string())).collect();
-                                    artist = artists.join(", ");
-                                } else if let Ok(s) = a.downcast_ref::<str>() {
-                                    artist = s.to_string();
-                                }
+                        }
+                        if let Some(a) = map.get("xesam:artist") {
+                            if let Ok(arr) = Vec::<String>::try_from(a.clone()) {
+                                artist = arr.join(", ");
+                            } else if let Ok(s) = String::try_from(a.clone()) {
+                                artist = s;
                             }
-                            if let Some(al) = map.get("xesam:album") {
-                                album = al.downcast_ref::<str>().ok().unwrap_or_default().to_string();
+                        }
+                        if let Some(al) = map.get("xesam:album") {
+                            if let Ok(s) = String::try_from(al.clone()) {
+                                album = s;
                             }
-                            if let Some(url) = map.get("mpris:artUrl") {
-                                art_url = url.downcast_ref::<str>().ok().map(|s| s.to_string());
+                        }
+                        if let Some(url) = map.get("mpris:artUrl") {
+                            if let Ok(s) = String::try_from(url.clone()) {
+                                art_url = Some(s);
                             }
                         }
                     }
 
-                    let app_name = name_str.trim_start_matches("org.mpris.MediaPlayer2.").to_string();
+                    let app_name = name_str
+                        .trim_start_matches("org.mpris.MediaPlayer2.")
+                        .to_string();
 
                     let info = LinuxMediaInfo {
                         is_available: !title.is_empty(),
