@@ -22,17 +22,15 @@ fn get_config() -> AppConfig {
 fn save_config(app_handle: AppHandle, config: AppConfig) {
     ConfigManager::save(&config);
     if let Some(window) = app_handle.get_webview_window("main") {
-        if let Ok(hwnd) = window.hwnd() {
-            WindowHelper::position_overlay(
-                hwnd.0 as isize,
-                &config.position,
-                380,
-                130,
-                config.margin_x,
-                config.margin_y,
-            );
-            WindowHelper::set_click_through(hwnd.0 as isize, config.click_through);
-        }
+        WindowHelper::position_overlay(
+            &window,
+            &config.position,
+            380.0,
+            130.0,
+            config.margin_x as f64,
+            config.margin_y as f64,
+        );
+        WindowHelper::set_click_through(&window, config.click_through);
     }
 }
 
@@ -42,9 +40,7 @@ fn set_click_through(app_handle: AppHandle, enabled: bool) {
     config.click_through = enabled;
     ConfigManager::save(&config);
     if let Some(window) = app_handle.get_webview_window("main") {
-        if let Ok(hwnd) = window.hwnd() {
-            WindowHelper::set_click_through(hwnd.0 as isize, enabled);
-        }
+        WindowHelper::set_click_through(&window, enabled);
     }
 }
 
@@ -54,16 +50,14 @@ fn set_position(app_handle: AppHandle, position: String) {
     config.position = position.clone();
     ConfigManager::save(&config);
     if let Some(window) = app_handle.get_webview_window("main") {
-        if let Ok(hwnd) = window.hwnd() {
-            WindowHelper::position_overlay(
-                hwnd.0 as isize,
-                &position,
-                380,
-                130,
-                config.margin_x,
-                config.margin_y,
-            );
-        }
+        WindowHelper::position_overlay(
+            &window,
+            &position,
+            380.0,
+            130.0,
+            config.margin_x as f64,
+            config.margin_y as f64,
+        );
     }
 }
 
@@ -99,20 +93,16 @@ pub fn run() {
             // Position overlay above taskbar
             let config = ConfigManager::load();
             if let Some(window) = app.get_webview_window("main") {
-                let _ = window.show();
-                let _ = window.set_always_on_top(true);
-                if let Ok(hwnd) = window.hwnd() {
-                    WindowHelper::position_overlay(
-                        hwnd.0 as isize,
-                        &config.position,
-                        380,
-                        130,
-                        config.margin_x,
-                        config.margin_y,
-                    );
-                    if config.click_through {
-                        WindowHelper::set_click_through(hwnd.0 as isize, true);
-                    }
+                WindowHelper::position_overlay(
+                    &window,
+                    &config.position,
+                    380.0,
+                    130.0,
+                    config.margin_x as f64,
+                    config.margin_y as f64,
+                );
+                if config.click_through {
+                    WindowHelper::set_click_through(&window, true);
                 }
             }
 

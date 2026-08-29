@@ -1,9 +1,7 @@
-use windows::Win32::Foundation::{HWND, RECT};
+use tauri::{LogicalPosition, LogicalSize, Position, Size, WebviewWindow};
+use windows::Win32::Foundation::RECT;
 use windows::Win32::UI::WindowsAndMessaging::{
-    GetWindowLongW, SetWindowLongW, SetWindowPos, SystemParametersInfoW, GWL_EXSTYLE,
-    HWND_TOPMOST, SPI_GETWORKAREA, SWP_NOACTIVATE, SWP_SHOWWINDOW,
-    SYSTEM_PARAMETERS_INFO_UPDATE_FLAGS, WS_EX_LAYERED, WS_EX_TOOLWINDOW,
-    WS_EX_TRANSPARENT,
+    SystemParametersInfoW, SPI_GETWORKAREA, SYSTEM_PARAMETERS_INFO_UPDATE_FLAGS,
 };
 
 pub struct WindowHelper;
@@ -27,54 +25,38 @@ impl WindowHelper {
     }
 
     pub fn position_overlay(
-        hwnd_raw: isize,
+        window: &WebviewWindow,
         position: &str,
-        width: i32,
-        height: i32,
-        margin_x: i32,
-        margin_y: i32,
+        width: f64,
+        height: f64,
+        margin_x: f64,
+        margin_y: f64,
     ) {
-        let hwnd = HWND(hwnd_raw as *mut _);
         let work_area = Self::get_work_area();
+        let scale = window.scale_factor().unwrap_or(1.0);
+
+        let screen_w = (work_area.right - work_area.left) as f64 / scale;
+        let screen_h = (work_area.bottom - work_area.top) as f64 / scale;
 
         let (x, y) = match position {
-            "bottom-left" => (work_area.left + margin_x, work_area.bottom - height - margin_y),
-            "top-right" => (work_area.right - width - margin_x, work_area.top + margin_y),
-            "top-left" => (work_area.left + margin_x, work_area.top + margin_y),
-            _ => (
-                work_area.right - width - margin_x,
-                work_area.bottom - height - margin_y,
-            ), // default "bottom-right"
+            "bottom-left" => (margin_x, screen_h - height - margin_y),
+            "top-right" => (screen_w - width - margin_x, margin_y),
+            "top-left" => (margin_x, margin_y),
+            _ => (screen_w - width - margin_x, screen_h - height - margin_y), // default bottom-right
         };
 
-        eprintln!("[MusicMotion] Positioning overlay at x={}, y={}, w={}, h={}", x, y, width, height);
+        eprintln!(
+            "[MusicMotion] Window positioned at x={}, y={}, size={}x{}, scale={}",
+            x, y, width, height, scale
+        );
 
-        unsafe {
-            let _ = SetWindowPos(
-                hwnd,
-                HWND_TOPMOST,
-                x,
-                y,
-                width,
-                height,
-                SWP_NOACTIVATE | SWP_SHOWWINDOW,
-            );
-        }
+        let _ = window.set_size(Size::Logical(LogicalSize { width, height }));
+        let _ = window.set_position(Position::Logical(LogicalPosition { x, y }));
+        let _ = window.set_always_on_top(true);
+        let _ = window.show();
     }
 
-    pub fn set_click_through(hwnd_raw: isize, enabled: bool) {
-        let hwnd = HWND(hwnd_raw as *mut _);
-        unsafe {
-            let current_ex = GetWindowLongW(hwnd, GWL_EXSTYLE);
-            let mut new_ex = current_ex | (WS_EX_LAYERED.0 as i32) | (WS_EX_TOOLWINDOW.0 as i32);
-
-            if enabled {
-                new_ex |= WS_EX_TRANSPARENT.0 as i32;
-            } else {
-                new_ex &= !(WS_EX_TRANSPARENT.0 as i32);
-            }
-
-            let _ = SetWindowLongW(hwnd, GWL_EXSTYLE, new_ex);
-        }
+    pub fn set_click_through(window: &WebviewWindow, enabled: bool) {
+        let _ = window.set_ignore_cursor_events(enabled);
     }
 }

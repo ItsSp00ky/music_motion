@@ -76,9 +76,7 @@ pub fn setup_tray(app: &AppHandle) -> Result<(), Box<dyn std::error::Error>> {
                     current_config.click_through = !current_config.click_through;
                     ConfigManager::save(&current_config);
                     if let Some(window) = app_handle.get_webview_window("main") {
-                        if let Ok(hwnd) = window.hwnd() {
-                            WindowHelper::set_click_through(hwnd.0 as isize, current_config.click_through);
-                        }
+                        WindowHelper::set_click_through(&window, current_config.click_through);
                         let _ = window.emit("config-update", current_config.clone());
                     }
                 }
@@ -109,9 +107,7 @@ fn apply_position(app: &AppHandle, config: &mut AppConfig, pos: &str) {
     config.position = pos.to_string();
     ConfigManager::save(config);
     if let Some(window) = app.get_webview_window("main") {
-        if let Ok(hwnd) = window.hwnd() {
-            WindowHelper::position_overlay(hwnd.0 as isize, pos, 380, 130, config.margin_x, config.margin_y);
-        }
+        WindowHelper::position_overlay(&window, pos, 380.0, 130.0, config.margin_x as f64, config.margin_y as f64);
         let _ = window.emit("config-update", config.clone());
     }
 }
