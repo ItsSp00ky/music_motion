@@ -5,7 +5,14 @@
 </p>
 
 <p align="center">
-  <strong>Ultra-lightweight, high-performance transparent audio & music overlay for Windows.</strong>
+  <strong>Ultra-lightweight, high-performance transparent audio & music overlay for Windows & Linux.</strong>
+</p>
+
+<p align="center">
+  <a href="https://github.com/ItsSp00ky/music_motion/commits/main"><img src="https://img.shields.io/github/last-commit/ItsSp00ky/music_motion?style=flat&logo=git&logoColor=white&color=0080ff" alt="Last Commit" /></a>
+  <a href="https://github.com/ItsSp00ky/music_motion"><img src="https://img.shields.io/github/languages/top/ItsSp00ky/music_motion?style=flat&color=0080ff" alt="Top Language" /></a>
+  <a href="https://github.com/ItsSp00ky/music_motion/releases"><img src="https://img.shields.io/github/v/release/ItsSp00ky/music_motion?style=flat&logo=github&logoColor=white&color=0080ff" alt="Release" /></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-0080ff?style=flat" alt="License: MIT" /></a>
 </p>
 
 <p align="center">
@@ -16,6 +23,16 @@
   <a href="#custom-themes">Custom Themes</a> •
   <a href="#building-from-source">Building from Source</a> •
   <a href="LICENSE">License</a>
+</p>
+
+<p align="center">
+  <em>Built with:</em><br>
+  <img src="https://img.shields.io/badge/Rust-2021-DEA584?style=flat&logo=rust&logoColor=white" alt="Rust" />
+  <img src="https://img.shields.io/badge/Tauri-v2-24C8D8?style=flat&logo=tauri&logoColor=white" alt="Tauri" />
+  <img src="https://img.shields.io/badge/TypeScript-5.6-3178C6?style=flat&logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/Vite-5.4-646CFF?style=flat&logo=vite&logoColor=white" alt="Vite" />
+  <img src="https://img.shields.io/badge/Windows-WASAPI%20%7C%20WinRT-0078D4?style=flat&logo=windows&logoColor=white" alt="Windows" />
+  <img src="https://img.shields.io/badge/Linux-MPRIS-FCC624?style=flat&logo=linux&logoColor=black" alt="Linux" />
 </p>
 
 ---
