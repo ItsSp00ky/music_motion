@@ -1,12 +1,12 @@
 :root {
   --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --bg-frosted: rgba(18, 20, 29, 0.72);
-  --border-frosted: rgba(255, 255, 255, 0.12);
+  --bg-frosted: rgba(18, 20, 29, 0.94);
+  --border-frosted: rgba(255, 255, 255, 0.22);
   --accent-primary: #6366f1;
   --accent-secondary: #ec4899;
   --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
 }
 
 * {
@@ -17,8 +17,10 @@
 }
 
 html, body {
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
   background: transparent;
   font-family: var(--font-sans);
@@ -31,13 +33,12 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 8px;
-  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  padding: 6px;
+  transition: opacity 0.3s ease;
 }
 
 #app.idle-hidden {
   opacity: 0;
-  transform: translateY(12px) scale(0.96);
   pointer-events: none;
 }
 
@@ -53,8 +54,8 @@ html, body {
   -webkit-backdrop-filter: blur(28px) saturate(180%);
   border: 1px solid var(--border-frosted);
   border-radius: 18px;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.06) inset;
-  padding: 12px 14px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+  padding: 10px 14px;
   display: flex;
   align-items: center;
   overflow: hidden;
@@ -62,11 +63,11 @@ html, body {
 
 .frosted-glow {
   position: absolute;
-  top: -40px;
-  left: -40px;
-  width: 120px;
-  height: 120px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(236, 72, 153, 0) 70%);
+  top: -30px;
+  left: -30px;
+  width: 100px;
+  height: 100px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.35) 0%, rgba(236, 72, 153, 0) 70%);
   filter: blur(20px);
   pointer-events: none;
 }
@@ -75,20 +76,20 @@ html, body {
   display: flex;
   align-items: center;
   width: 100%;
-  gap: 14px;
+  gap: 12px;
   z-index: 1;
 }
 
 .cover-wrapper {
   position: relative;
-  width: 58px;
-  height: 58px;
-  min-width: 58px;
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
   border-radius: 12px;
   overflow: hidden;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -117,7 +118,7 @@ html, body {
 }
 
 .playing-pulse.active {
-  border-color: rgba(99, 102, 241, 0.6);
+  border-color: rgba(99, 102, 241, 0.7);
   animation: pulseGlow 2s infinite ease-in-out;
 }
 
@@ -142,7 +143,7 @@ html, body {
 }
 
 .track-title {
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 600;
   color: #fff;
   letter-spacing: -0.01em;
@@ -172,12 +173,12 @@ html, body {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   padding: 1px 6px;
   border-radius: 6px;
   color: #e2e8f0;
   font-weight: 500;
-  max-width: 100px;
+  max-width: 110px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -217,15 +218,15 @@ html, body {
 .hud-pill {
   width: 100%;
   height: 52px;
-  background: rgba(15, 23, 42, 0.85);
+  background: rgba(15, 23, 42, 0.92);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 9999px;
   padding: 0 16px;
   display: flex;
   align-items: center;
   gap: 10px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
 }
 
 .hud-indicator {
@@ -290,14 +291,14 @@ html, body {
 .island-pill {
   width: 260px;
   height: 52px;
-  background: #000;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(10, 10, 12, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 30px;
   padding: 6px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.7);
   transition: width 0.35s cubic-bezier(0.16, 1, 0.3, 1), height 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -363,10 +364,10 @@ html, body {
 .theme-cyber-neon {
   width: 100%;
   height: 100%;
-  background: rgba(10, 10, 18, 0.9);
+  background: rgba(10, 10, 18, 0.95);
   border: 1px solid #06b6d4;
-  box-shadow: 0 0 20px rgba(6, 182, 212, 0.3), inset 0 0 10px rgba(6, 182, 212, 0.15);
-  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(6, 182, 212, 0.35), inset 0 0 10px rgba(6, 182, 212, 0.2);
+  border-radius: 10px;
   padding: 10px 14px;
   display: flex;
   flex-direction: column;
@@ -412,18 +413,18 @@ html, body {
 }
 
 /* ==========================================================================
-   Context Menu Overlay (for direct right click)
+   Context Menu Overlay
    ========================================================================== */
 .context-menu {
   position: fixed;
   z-index: 1000;
-  background: rgba(23, 23, 23, 0.95);
+  background: rgba(23, 23, 23, 0.98);
   backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   border-radius: 12px;
   padding: 6px;
   min-width: 160px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
   display: none;
 }
 
@@ -443,6 +444,6 @@ html, body {
 }
 
 .menu-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.12);
   color: #fff;
 }
