@@ -15,7 +15,7 @@ jobs:
       matrix:
         include:
           - platform: 'windows-latest'
-            args: '--no-deps-check'
+            args: ''
 
     runs-on: ${{ matrix.platform }}
     steps:
