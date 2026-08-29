@@ -77,6 +77,6 @@ my-custom-theme/
 
 ## 📤 Sharing Themes with the Community
 
-1. Fork the [MusicMotion Repository](https://github.com/your-username/music-motion).
+1. Fork the [MusicMotion Repository](https://github.com/ItsSp00ky/music_motion).
 2. Place your theme folder under `themes/<your-theme-name>/`.
 3. Submit a Pull Request!

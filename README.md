@@ -49,14 +49,14 @@
 ## 🚀 Installation
 
 ### Option 1: Download Pre-built Release (Recommended)
-1. Go to the [Releases](https://github.com/your-username/music-motion/releases) page.
-2. Download the latest `MusicMotion_x64_en-US.msi` installer or portable `.exe`.
+1. Go to the [Releases](https://github.com/ItsSp00ky/music_motion/releases) page.
+2. Download the latest `MusicMotion_1.0.0_x64_en-US.msi` installer or portable `MusicMotion.exe`.
 3. Run the installer and launch **MusicMotion**.
 
 ### Option 2: Run with Bun / Cargo
 ```powershell
 # Clone the repository
-git clone https://github.com/your-username/music-motion.git
+git clone https://github.com/ItsSp00ky/music_motion.git
 cd music_motion
 
 # Install frontend dependencies
