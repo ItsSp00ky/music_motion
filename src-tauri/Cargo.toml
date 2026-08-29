@@ -37,4 +37,4 @@ features = [
 ]
 
 [target.'cfg(target_os = "linux")'.dependencies]
-zbus = { version = "4.4", default-features = false, features = ["tokio"] }
+mpris = "2.0"
