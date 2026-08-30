@@ -1,6 +1,6 @@
 [package]
 name = "music-motion"
-version = "1.0.0"
+version = "1.0.1"
 description = "Ultra-lightweight, smooth transparent music & audio overlay for Windows & Linux"
 authors = ["MusicMotion Team"]
 edition = "2021"
@@ -20,6 +20,7 @@ serde_json = "1.0"
 tokio = { version = "1.38", features = ["full"] }
 base64 = "0.22"
 dirs = "5.0"
+url = "2.5"
 
 [target.'cfg(windows)'.dependencies.windows]
 version = "0.58"
@@ -38,3 +39,5 @@ features = [
 
 [target.'cfg(target_os = "linux")'.dependencies]
 mpris = "2.0"
+gtk = "0.18"
+gdk = "0.18"

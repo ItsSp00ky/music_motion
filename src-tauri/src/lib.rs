@@ -80,6 +80,13 @@ fn open_themes_folder() {
 }
 
 pub fn run() {
+    #[cfg(target_os = "linux")]
+    {
+        if std::env::var("GDK_BACKEND").is_err() {
+            std::env::set_var("GDK_BACKEND", "x11");
+        }
+    }
+
     let audio_engine = AudioEngine::new();
 
     tauri::Builder::default()

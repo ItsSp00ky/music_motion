@@ -7,6 +7,16 @@ const appEl = document.getElementById('app') as HTMLElement;
 const contextMenu = document.getElementById('context-menu') as HTMLElement;
 const menuCtStatus = document.getElementById('menu-ct-status') as HTMLElement;
 const menuThemeName = document.getElementById('menu-theme-name') as HTMLElement;
+const menuPosName = document.getElementById('menu-pos-name') as HTMLElement;
+
+function formatPositionName(pos: string): string {
+  switch (pos) {
+    case 'bottom-left': return 'Bottom-Left';
+    case 'top-right': return 'Top-Right';
+    case 'top-left': return 'Top-Left';
+    default: return 'Bottom-Right';
+  }
+}
 
 const themeEngine = new ThemeEngine(appEl);
 
@@ -89,6 +99,7 @@ window.addEventListener('contextmenu', (e) => {
 
   if (menuCtStatus) menuCtStatus.textContent = currentConfig.click_through ? 'ON' : 'OFF';
   if (menuThemeName) menuThemeName.textContent = currentConfig.theme;
+  if (menuPosName) menuPosName.textContent = formatPositionName(currentConfig.position);
 });
 
 window.addEventListener('click', (e) => {
@@ -102,7 +113,18 @@ contextMenu.addEventListener('click', async (e) => {
   if (!target) return;
 
   const action = target.dataset.action;
-  if (action === 'toggle-click-through') {
+  if (action === 'cycle-position') {
+    const positions: Array<AppConfig['position']> = ['bottom-right', 'bottom-left', 'top-left', 'top-right'];
+    const currentIndex = positions.indexOf(currentConfig.position);
+    const nextPos = positions[(currentIndex + 1) % positions.length];
+    currentConfig.position = nextPos;
+    try {
+      await invoke('set_position', { position: nextPos });
+    } catch {
+      // Dev mode fallback
+    }
+    if (menuPosName) menuPosName.textContent = formatPositionName(nextPos);
+  } else if (action === 'toggle-click-through') {
     currentConfig.click_through = !currentConfig.click_through;
     try {
       await invoke('set_click_through', { enabled: currentConfig.click_through });

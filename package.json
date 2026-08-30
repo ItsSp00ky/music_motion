@@ -1,9 +1,9 @@
 {
   "name": "music-motion",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "type": "module",
-  "description": "Ultra-lightweight, smooth transparent music & audio overlay for Windows",
+  "description": "Ultra-lightweight, smooth transparent music & audio overlay for Windows & Linux",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",

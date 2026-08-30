@@ -39,6 +39,38 @@ impl LinuxMprisMonitor {
                 let album = metadata.album_name().unwrap_or_default().to_string();
                 let art_url = metadata.art_url().map(|s| s.to_string());
 
+                let formatted_thumbnail = art_url.and_then(|url| {
+                    if url.starts_with("data:") || url.starts_with("http://") || url.starts_with("https://") {
+                        Some(url)
+                    } else {
+                        // Handle file:// URIs or local file paths
+                        let file_path = if let Some(stripped) = url.strip_prefix("file://") {
+                            // Convert percent encoded path if needed
+                            url::form_urlencoded::parse(stripped.as_bytes())
+                                .map(|(k, _)| k.into_owned())
+                                .collect::<Vec<String>>()
+                                .join("")
+                        } else {
+                            url.clone()
+                        };
+
+                        if let Ok(bytes) = std::fs::read(&file_path) {
+                            let mime = if file_path.ends_with(".png") {
+                                "image/png"
+                            } else if file_path.ends_with(".webp") {
+                                "image/webp"
+                            } else {
+                                "image/jpeg"
+                            };
+                            use base64::Engine;
+                            let encoded = base64::engine::general_purpose::STANDARD.encode(&bytes);
+                            Some(format!("data:{};base64,{}", mime, encoded))
+                        } else {
+                            Some(url)
+                        }
+                    }
+                });
+
                 let info = LinuxMediaInfo {
                     is_available: !title.is_empty(),
                     is_playing,
@@ -46,7 +78,7 @@ impl LinuxMprisMonitor {
                     artist,
                     album,
                     source_app: identity,
-                    thumbnail_url: art_url,
+                    thumbnail_url: formatted_thumbnail,
                 };
 
                 if is_playing {
